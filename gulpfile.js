@@ -19,6 +19,10 @@ const imageminJR = require('imagemin-jpeg-recompress');
 const pngquant = require('imagemin-pngquant');
 const spritesmith = require('gulp.spritesmith');
 const merge2 = require('merge2');
+const svgmin = require('gulp-svgmin');
+const cheerio = require('gulp-cheerio');
+const replace = require('gulp-replace');
+const spriteSVG = require('gulp-svg-sprite');
 const del = require('del');
 const fontmin = require('gulp-fontmin');
 const ttf2woff2 = require('gulp-ttf2woff2');
@@ -60,6 +64,7 @@ function serve() {
 
 function html() {
     return src(path.src.html)
+        .pipe(include())
         .pipe(dest(path.dist))
 }
 
@@ -138,7 +143,51 @@ function spritePng() {
 
 /* =====================  svg  ==================== */
 
-
+function spriteSvg() {
+    return src(`${path.src.img}svg/*.svg`)
+        .pipe(plumber({
+            errorHandler: onError
+        }))
+        .pipe(svgmin({
+            js2svg: {
+                pretty: true
+            }
+        }))
+        .pipe(cheerio({
+            run: $ => {
+                $('[fill]').removeAttr('fill');
+                $('[stroke]').removeAttr('stroke');
+                $('[style]').removeAttr('style');
+            },
+            parserOptions: {
+                xmlMode: true
+            }
+        }))
+        .pipe(replace('&gt;', '>'))
+        .pipe(spriteSVG({
+            mode: {
+                symbol: {
+                    dest: './',
+                    sprite: 'sprite.svg',
+                    render: {
+                        sass: {
+                            dest: '../../assets/sass/tmp/_spriteSvg.sass',
+                            template: `${path.src.sass}modules/spriteSvg.template.sass`
+                        }
+                    },
+                    svg: {
+                        xmlDeclaration: false,
+                        doctypeDeclaration: false,
+                        rootAttributes: {
+                            style: 'display:none;',
+                            'aria-hidden': 'true'
+                        }
+                    }
+                }
+            }
+        }))
+        .pipe(dest(path.src.img))
+}
 
 /* ===================  images  =================== */
 
@@ -195,6 +244,7 @@ function watchFiles() {
     watch(path.src.js, js).on('change', reload);
     watch(path.src.img, images);
     watch(`${path.src.img}png/*.png`, spritePng);
+    watch(`${path.src.img}svg/*.svg`, spriteSvg);
 }
 
 /* ====================  clean  =================== */
@@ -215,7 +265,8 @@ function clean() {
 
 const build = series(
     clean,
-    spritePng,
+    // spritePng,
+    // spriteSvg,
     parallel(html, styles, js, images, fonts),
     parallel(watchFiles, serve)
 );
@@ -225,6 +276,7 @@ exports.styles = styles;
 exports.js = js;
 exports.images = images;
 exports.spritePng = spritePng;
+exports.spriteSvg = spriteSvg;
 exports.fontgen = fontgen;
 exports.fonts = fonts;
 exports.clean = clean;

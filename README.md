@@ -33,9 +33,12 @@
 #### SVG
 
 1.  Uncomment string `@import tmp/spriteSvg` in `'src/sass/main.sass'`.
-2.  Uncomment string `//- include ../../img/sprite.svg` in `'src/pug/pages/index.pug'`.
-3.  Uncomment task `'sprite:svg'` in `'build'` task gulpfile.js
-4.  Put icon into pug file with mixin `+icon('iconName','iconModificator')`
+2.  Uncomment string `//= require assets/img/sprite.svg` in `index.html`
+3.  Uncomment `'spriteSvg'` in `'build'` task gulpfile.js
+4.  Put icon into html:
+-     <svg class="icon iconName">
+          <use xlink:href="#iconName"></use>
+      </svg>
 
 ---
 
