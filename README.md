@@ -21,10 +21,9 @@
 
 1.  Uncomment `'spritePng'` in `'build'` task gulpfile.js.
 2.  Put *.png icons into folder `src/assets/img/png`.
-3.  Uncomment this strings:
+3.  Find `'src/assets/sass/main.sass'` and uncomment strings:
 -     @import modules/mixin-spritePng
       @import tmp/spritePng
-    in `'src/assets/sass/main.sass'`.
 4.  Put icon into sass file with mixin `+sprite($iconName)`
 
 - Example: 
