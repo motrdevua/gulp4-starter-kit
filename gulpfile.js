@@ -7,32 +7,21 @@ const {
     series,
     parallel,
 } = require('gulp');
-const sass = require('gulp-sass');
-const autoprefixer = require('gulp-autoprefixer');
-const cleanCSS = require('gulp-clean-css');
-const rename = require('gulp-rename');
-const include = require('gulp-include');
-const uglify = require('gulp-uglify');
-const cache = require('gulp-cache');
-const imagemin = require('gulp-imagemin');
+const plugin = require('gulp-load-plugins')({
+    rename: {
+        'gulp-clean-css': 'cleanCSS',
+        'gulp-svg-sprite': 'spriteSVG'
+    }
+});
 const imageminJR = require('imagemin-jpeg-recompress');
 const pngquant = require('imagemin-pngquant');
-const spritesmith = require('gulp.spritesmith');
 const merge2 = require('merge2');
-const svgmin = require('gulp-svgmin');
-const cheerio = require('gulp-cheerio');
-const replace = require('gulp-replace');
-const spriteSVG = require('gulp-svg-sprite');
 const del = require('del');
-const fontmin = require('gulp-fontmin');
-const ttf2woff2 = require('gulp-ttf2woff2');
-const notify = require("gulp-notify");
-const plumber = require("gulp-plumber");
 const browserSync = require("browser-sync").create();
 const reload = browserSync.reload;
 
 const onError = err => {
-    notify.onError({
+    plugin.notify.onError({
         title: `Error in ${err.plugin}`,
         message: '<%= error.message %>',
         sound: 'Pop',
@@ -64,7 +53,7 @@ function serve() {
 
 function html() {
     return src(path.src.html)
-        .pipe(include())
+        .pipe(plugin.include())
         .pipe(dest(path.dist))
 }
 
@@ -72,24 +61,24 @@ function html() {
 
 function styles() {
     return src(`${path.src.sass}*.sass`)
-        .pipe(plumber({
+        .pipe(plugin.plumber({
             errorHandler: onError
         }))
-        .pipe(sass({
+        .pipe(plugin.sass({
             outputStyle: 'expanded'
         }))
-        .pipe(autoprefixer({
+        .pipe(plugin.autoprefixer({
             browsers: ['last 8 versions'],
             cascade: true
         }))
-        .pipe(cleanCSS({
+        .pipe(plugin.cleanCSS({
             level: 2,
             debug: true
         }, (details) => {
             console.log(`${details.name}: ${details.stats.originalSize}`);
             console.log(`${details.name}: ${details.stats.minifiedSize}`);
         }))
-        .pipe(rename({
+        .pipe(plugin.rename({
             basename: "style",
             suffix: ".min",
             extname: ".css"
@@ -104,16 +93,16 @@ function js() {
     return src(`${path.src.js}*.js`, {
             sourcemaps: true
         })
-        .pipe(plumber({
+        .pipe(plugin.plumber({
             errorHandler: onError
         }))
-        .pipe(include({
+        .pipe(plugin.include({
             extensions: 'js',
             hardFail: true,
             includePaths: [`${__dirname}/node_modules`, `${__dirname}/src/assets/js/components`]
         }))
-        .pipe(uglify())
-        .pipe(rename({
+        .pipe(plugin.uglify())
+        .pipe(plugin.rename({
             suffix: ".min",
             extname: ".js"
         }))
@@ -127,7 +116,7 @@ function js() {
 function spritePng() {
     const spriteData = src(`${path.src.img}png/*.png`)
         .pipe(
-            spritesmith({
+            plugin.spritesmith({
                 imgName: 'sprite.png',
                 cssName: '_spritePng.sass',
                 cssFormat: 'sass',
@@ -145,15 +134,15 @@ function spritePng() {
 
 function spriteSvg() {
     return src(`${path.src.img}svg/*.svg`)
-        .pipe(plumber({
+        .pipe(plugin.plumber({
             errorHandler: onError
         }))
-        .pipe(svgmin({
+        .pipe(plugin.svgmin({
             js2svg: {
                 pretty: true
             }
         }))
-        .pipe(cheerio({
+        .pipe(plugin.cheerio({
             run: $ => {
                 $('[fill]').removeAttr('fill');
                 $('[stroke]').removeAttr('stroke');
@@ -163,8 +152,8 @@ function spriteSvg() {
                 xmlMode: true
             }
         }))
-        .pipe(replace('&gt;', '>'))
-        .pipe(spriteSVG({
+        .pipe(plugin.replace('&gt;', '>'))
+        .pipe(plugin.spriteSVG({
             mode: {
                 symbol: {
                     dest: './',
@@ -193,11 +182,11 @@ function spriteSvg() {
 
 function images() {
     return src([`${path.src.img}**/*.*`, `!${path.src.img}{png,svg}/*.*`])
-        .pipe(cache(imagemin([
-            imagemin.gifsicle({
+        .pipe(plugin.cache(plugin.imagemin([
+            plugin.imagemin.gifsicle({
                 interlaced: true
             }),
-            imagemin.jpegtran({
+            plugin.imagemin.jpegtran({
                 progressive: true
             }),
             imageminJR({
@@ -206,8 +195,8 @@ function images() {
                 max: 70,
                 quality: 'medium'
             }),
-            imagemin.svgo(),
-            imagemin.optipng({
+            plugin.imagemin.svgo(),
+            plugin.imagemin.optipng({
                 optimizationLevel: 3
             }),
             pngquant({
@@ -224,8 +213,8 @@ function images() {
 
 function fontgen() {
     return src(`${path.src.fonts}**/*.ttf`)
-        .pipe(fontmin())
-        .pipe(ttf2woff2())
+        .pipe(plugin.fontmin())
+        .pipe(plugin.ttf2woff2())
         .pipe(dest(path.src.fonts));
 }
 
@@ -250,11 +239,11 @@ function watchFiles() {
 /* ====================  clean  =================== */
 
 function clean() {
-    cache.clearAll();
+    plugin.cache.clearAll();
     return del([
         path.dist,
         `${path.src.fonts}**/*.css`,
-        `${path.src.sass}tmp/*.*`,
+        `${path.src.sass}tmp`,
         `${path.src.img}sprite.{png,svg}`,
     ]).then(dir => {
         console.log('Deleted files and folders:\n', dir.join('\n'));
@@ -265,8 +254,8 @@ function clean() {
 
 const build = series(
     clean,
-    // spritePng,
-    // spriteSvg,
+    spritePng,
+    spriteSvg,
     parallel(html, styles, js, images, fonts),
     parallel(watchFiles, serve)
 );
