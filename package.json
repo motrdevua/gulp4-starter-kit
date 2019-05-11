@@ -33,8 +33,10 @@
     "gulp-sass": "^4.0.2",
     "gulp-ttf2woff2": "^2.0.2",
     "gulp-uglify": "^3.0.2",
+    "gulp.spritesmith": "^6.9.0",
     "imagemin-jpeg-recompress": "^6.0.0",
     "imagemin-pngquant": "^7.0.0",
+    "merge2": "^1.2.3",
     "rfs": "^8.0.4"
   }
 }

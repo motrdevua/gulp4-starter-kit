@@ -17,6 +17,8 @@ const cache = require('gulp-cache');
 const imagemin = require('gulp-imagemin');
 const imageminJR = require('imagemin-jpeg-recompress');
 const pngquant = require('imagemin-pngquant');
+const spritesmith = require('gulp.spritesmith');
+const merge2 = require('merge2');
 const del = require('del');
 const fontmin = require('gulp-fontmin');
 const ttf2woff2 = require('gulp-ttf2woff2');
@@ -115,10 +117,33 @@ function js() {
         }))
 }
 
+/* =====================  png  ==================== */
+
+function spritePng() {
+    const spriteData = src(`${path.src.img}png/*.png`)
+        .pipe(
+            spritesmith({
+                imgName: 'sprite.png',
+                cssName: '_spritePng.sass',
+                cssFormat: 'sass',
+                algorithm: 'binary-tree',
+                padding: 4,
+                cssTemplate: `${path.src.sass}modules/spritePng.template.sass`
+            })
+        );
+    const imgStream = spriteData.img.pipe(dest(path.src.img));
+    const cssStream = spriteData.css.pipe(dest(`${path.src.sass}tmp/`));
+    return merge2(imgStream, cssStream);
+}
+
+/* =====================  svg  ==================== */
+
+
+
 /* ===================  images  =================== */
 
 function images() {
-    return src(`${path.src.img}**/*.*`)
+    return src([`${path.src.img}**/*.*`, `!${path.src.img}{png,svg}/*.*`])
         .pipe(cache(imagemin([
             imagemin.gifsicle({
                 interlaced: true
@@ -169,6 +194,7 @@ function watchFiles() {
     watch(path.src.sass, styles);
     watch(path.src.js, js).on('change', reload);
     watch(path.src.img, images);
+    watch(`${path.src.img}png/*.png`, spritePng);
 }
 
 /* ====================  clean  =================== */
@@ -178,6 +204,8 @@ function clean() {
     return del([
         path.dist,
         `${path.src.fonts}**/*.css`,
+        `${path.src.sass}tmp/*.*`,
+        `${path.src.img}sprite.{png,svg}`,
     ]).then(dir => {
         console.log('Deleted files and folders:\n', dir.join('\n'));
     });
@@ -187,6 +215,7 @@ function clean() {
 
 const build = series(
     clean,
+    spritePng,
     parallel(html, styles, js, images, fonts),
     parallel(watchFiles, serve)
 );
@@ -195,6 +224,7 @@ exports.html = html;
 exports.styles = styles;
 exports.js = js;
 exports.images = images;
+exports.spritePng = spritePng;
 exports.fontgen = fontgen;
 exports.fonts = fonts;
 exports.clean = clean;
