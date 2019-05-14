@@ -6,15 +6,9 @@
     "es6": true,
     "jquery": true
   },
-  "extends": [
-    "airbnb-base",
-    "prettier"
-  ],
+  "extends": ["airbnb-base", "prettier"],
   "rules": {
     "no-console": 0
   },
-  "plugins": [
-    "dollar-sign",
-    "jquery"
-  ]
+  "plugins": ["dollar-sign", "jquery"]
 }
