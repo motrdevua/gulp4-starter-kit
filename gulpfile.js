@@ -1,5 +1,3 @@
-"use strict";
-
 const {
   src,
   dest,
@@ -18,7 +16,10 @@ const pngquant = require('imagemin-pngquant');
 const merge2 = require('merge2');
 const del = require('del');
 const browserSync = require("browser-sync").create();
-const reload = browserSync.reload;
+
+const {
+  reload
+} = browserSync;
 
 const onError = err => {
   plugin.notify.onError({
@@ -60,7 +61,9 @@ function html() {
 /* ===================  styles  =================== */
 
 function styles() {
-  return src(`${path.src.sass}*.sass`)
+  return src(`${path.src.sass}*.sass`, {
+      sourcemaps: true
+    })
     .pipe(plugin.plumber({
       errorHandler: onError
     }))
@@ -83,7 +86,9 @@ function styles() {
       suffix: ".min",
       extname: ".css"
     }))
-    .pipe(dest(`${path.dist}assets/css`))
+    .pipe(dest(`${path.dist}assets/css`, {
+      sourcemaps: '.'
+    }))
     .pipe(browserSync.stream());
 }
 
@@ -96,6 +101,9 @@ function js() {
     .pipe(plugin.plumber({
       errorHandler: onError
     }))
+    .pipe(plugin.babel({
+      presets: ['@babel/env']
+    }))
     .pipe(plugin.include({
       extensions: 'js',
       hardFail: true,
@@ -107,7 +115,7 @@ function js() {
       extname: ".js"
     }))
     .pipe(dest(`${path.dist}assets/js`, {
-      sourcemaps: true
+      sourcemaps: '.'
     }))
 }
 

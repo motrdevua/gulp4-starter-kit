@@ -18,10 +18,20 @@
   },
   "homepage": "https://github.com/motrdevua/gulp4-starter-kit#readme",
   "devDependencies": {
+    "@babel/core": "^7.4.4",
+    "@babel/preset-env": "^7.4.4",
+    "acorn": "^6.1.1",
     "browser-sync": "^2.26.5",
     "del": "^4.1.1",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-config-prettier": "^4.2.0",
+    "eslint-plugin-import": "^2.17.2",
+    "eslint-plugin-jsx-a11y": "^6.2.1",
+    "eslint-plugin-react": "^7.13.0",
     "gulp": "^4.0.2",
     "gulp-autoprefixer": "^6.1.0",
+    "gulp-babel": "^8.0.0",
     "gulp-cache": "^1.1.1",
     "gulp-cheerio": "^0.6.3",
     "gulp-clean-css": "^4.2.0",
@@ -42,6 +52,7 @@
     "imagemin-jpeg-recompress": "^6.0.0",
     "imagemin-pngquant": "^7.0.0",
     "merge2": "^1.2.3",
+    "prettier": "^1.17.1",
     "rfs": "^8.0.4"
   }
 }
