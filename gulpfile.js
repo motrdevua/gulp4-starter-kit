@@ -1,17 +1,17 @@
-const { src, dest, watch, series, parallel } = require('gulp')
+const { src, dest, watch, series, parallel } = require('gulp');
 const plugin = require('gulp-load-plugins')({
   rename: {
     'gulp-clean-css': 'cleanCSS',
     'gulp-svg-sprite': 'spriteSVG',
   },
-})
-const imageminJR = require('imagemin-jpeg-recompress')
-const pngquant = require('imagemin-pngquant')
-const merge2 = require('merge2')
-const del = require('del')
-const browserSync = require('browser-sync').create()
+});
+const imageminJR = require('imagemin-jpeg-recompress');
+const pngquant = require('imagemin-pngquant');
+const merge2 = require('merge2');
+const del = require('del');
+const browserSync = require('browser-sync').create();
 
-const { reload } = browserSync
+const { reload } = browserSync;
 
 const onError = err => {
   plugin.notify.onError({
@@ -19,9 +19,9 @@ const onError = err => {
     message: '<%= error.message %>',
     sound: 'Pop',
     onLast: true,
-  })(err)
-  this.emit('end')
-}
+  })(err);
+  this.emit('end');
+};
 
 const path = {
   src: {
@@ -32,14 +32,14 @@ const path = {
     fonts: 'src/assets/fonts/',
   },
   dist: 'dist/',
-}
+};
 
 /* ===================   serve  =================== */
 
 function serve() {
   browserSync.init({
     server: path.dist,
-  })
+  });
 }
 
 /* ====================  html  ==================== */
@@ -47,7 +47,7 @@ function serve() {
 function html() {
   return src(path.src.html)
     .pipe(plugin.include())
-    .pipe(dest(path.dist))
+    .pipe(dest(path.dist));
 }
 
 /* ===================  styles  =================== */
@@ -79,8 +79,8 @@ function styles() {
           debug: true,
         },
         details => {
-          console.log(`${details.name}: ${details.stats.originalSize}`)
-          console.log(`${details.name}: ${details.stats.minifiedSize}`)
+          console.log(`${details.name}: ${details.stats.originalSize}`);
+          console.log(`${details.name}: ${details.stats.minifiedSize}`);
         }
       )
     )
@@ -96,7 +96,7 @@ function styles() {
         sourcemaps: '.',
       })
     )
-    .pipe(browserSync.stream())
+    .pipe(browserSync.stream());
 }
 
 /* =====================  js  ===================== */
@@ -136,7 +136,7 @@ function js() {
       dest(`${path.dist}assets/js`, {
         sourcemaps: '.',
       })
-    )
+    );
 }
 
 /* =====================  png  ==================== */
@@ -151,10 +151,10 @@ function spritePng() {
       padding: 4,
       cssTemplate: `${path.src.sass}modules/spritePng.template.sass`,
     })
-  )
-  const imgStream = spriteData.img.pipe(dest(path.src.img))
-  const cssStream = spriteData.css.pipe(dest(`${path.src.sass}tmp/`))
-  return merge2(imgStream, cssStream)
+  );
+  const imgStream = spriteData.img.pipe(dest(path.src.img));
+  const cssStream = spriteData.css.pipe(dest(`${path.src.sass}tmp/`));
+  return merge2(imgStream, cssStream);
 }
 
 /* =====================  svg  ==================== */
@@ -176,9 +176,9 @@ function spriteSvg() {
     .pipe(
       plugin.cheerio({
         run: $ => {
-          $('[fill]').removeAttr('fill')
-          $('[stroke]').removeAttr('stroke')
-          $('[style]').removeAttr('style')
+          $('[fill]').removeAttr('fill');
+          $('[stroke]').removeAttr('stroke');
+          $('[style]').removeAttr('style');
         },
         parserOptions: {
           xmlMode: true,
@@ -210,7 +210,7 @@ function spriteSvg() {
         },
       })
     )
-    .pipe(dest(path.src.img))
+    .pipe(dest(path.src.img));
 }
 
 /* ===================  images  =================== */
@@ -248,7 +248,7 @@ function images() {
         )
       )
     )
-    .pipe(dest(`${path.dist}assets/img`))
+    .pipe(dest(`${path.dist}assets/img`));
 }
 
 /* ===================  fontgen  ================== */
@@ -257,7 +257,7 @@ function fontgen() {
   return src(`${path.src.fonts}**/*.ttf`)
     .pipe(plugin.fontmin())
     .pipe(plugin.ttf2woff2())
-    .pipe(dest(path.src.fonts))
+    .pipe(dest(path.src.fonts));
 }
 
 /* ====================  fonts  =================== */
@@ -265,32 +265,32 @@ function fontgen() {
 function fonts() {
   return src(`${path.src.fonts}**/*.{svg,eot,ttf,woff,woff2}`).pipe(
     dest(`${path.dist}assets/fonts`)
-  )
+  );
 }
 
 /* ====================  watch  =================== */
 
 function watchFiles() {
-  watch(path.src.html, html).on('change', reload)
-  watch(path.src.sass, styles)
-  watch(path.src.js, js).on('change', reload)
-  watch(path.src.img, images)
-  watch(`${path.src.img}png/*.png`, spritePng)
-  watch(`${path.src.img}svg/*.svg`, spriteSvg)
+  watch(path.src.html, html).on('change', reload);
+  watch(path.src.sass, styles);
+  watch(path.src.js, js).on('change', reload);
+  watch(path.src.img, images);
+  watch(`${path.src.img}png/*.png`, spritePng);
+  watch(`${path.src.img}svg/*.svg`, spriteSvg);
 }
 
 /* ====================  clean  =================== */
 
 function clean() {
-  plugin.cache.clearAll()
+  plugin.cache.clearAll();
   return del([
     path.dist,
     `${path.src.fonts}**/*.css`,
     `${path.src.sass}tmp`,
     `${path.src.img}sprite.{png,svg}`,
   ]).then(dir => {
-    console.log('Deleted files and folders:\n', dir.join('\n'))
-  })
+    console.log('Deleted files and folders:\n', dir.join('\n'));
+  });
 }
 
 /* ===================  build  ==================== */
@@ -301,15 +301,15 @@ const build = series(
   // spriteSvg,
   parallel(html, styles, js, images, fonts),
   parallel(watchFiles, serve)
-)
+);
 
-exports.html = html
-exports.styles = styles
-exports.js = js
-exports.images = images
-exports.spritePng = spritePng
-exports.spriteSvg = spriteSvg
-exports.fontgen = fontgen
-exports.fonts = fonts
-exports.clean = clean
-exports.default = build
+exports.html = html;
+exports.styles = styles;
+exports.js = js;
+exports.images = images;
+exports.spritePng = spritePng;
+exports.spriteSvg = spriteSvg;
+exports.fontgen = fontgen;
+exports.fonts = fonts;
+exports.clean = clean;
+exports.default = build;
