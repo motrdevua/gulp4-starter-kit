@@ -1,6 +1,6 @@
 # Gulp4 starter-kit
 
-### Installation
+## Installation
 
 1.  `git clone https://github.com/motrdevua/gulp4-starter-kit.git`
 2.  `npm install`

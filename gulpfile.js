@@ -53,7 +53,7 @@ function html() {
 /* ===================  styles  =================== */
 
 function styles() {
-  return src(`${path.src.sass}*.sass`, {
+  return src(`${path.src.sass}*.{sass,scss}`, {
     sourcemaps: true,
   })
     .pipe(
