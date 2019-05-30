@@ -9,7 +9,7 @@
 
 1.  Put ttf file to the directory `'src/assets/fonts/'`.
 2.  Run `gulp fontgen`
-3.  Find file: `'src/assets/sass/parts/_fonttylesheet.sass'`.
+3.  Find file: `'src/assets/sass/parts/_fonttylesheet.scss'`.
 4.  Add font name like: `+font-face('fontname', '../fonts/fontname')`
 
 -   Example:
@@ -21,10 +21,10 @@
 
 1.  Uncomment `'spritePng'` in `'build'` task in `gulpfile.js`.
 2.  Put *.png icons into folder `src/assets/img/png`.
-3.  Find `'main.sass'` and uncomment strings:
+3.  Find `'main.scss'` and uncomment strings:
 -     @import modules/mixin-spritePng
       @import tmp/spritePng
-4.  Put icon into sass file with mixin `+sprite($iconName)`
+4.  Put icon into scss file with mixin `+sprite($iconName)`
 
 - Example: 
 -     .icon
@@ -32,7 +32,7 @@
 
 #### SVG
 
-1.  Uncomment string `@import tmp/spriteSvg` in `'main.sass'`.
+1.  Uncomment string `@import tmp/spriteSvg` in `'main.scss'`.
 2.  Uncomment string `//= require assets/img/sprite.svg` in `index.html`
 3.  Uncomment `'spriteSvg'` in `'build'` task in `gulpfile.js`
 4.  Put icon into html:
