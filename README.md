@@ -3,7 +3,7 @@
 ## Installation
 
 1.  `git clone https://github.com/motrdevua/gulp4-starter-kit.git`
-2.  `npm install`
+2.  `yarn` or `npm install`
 
 ### Generate required fonts (ttf, eot, woff, woff2, svg) from a ttf file
 
@@ -45,11 +45,11 @@
 
 ### Run build
 
-`npm run build` or `gulp`
+`yarn build` or `npm run build` or `gulp`
 
 ### Clean
 
-`npm run clean` or `gulp clean`
+`yarn clean` or `npm run clean` or `gulp clean`
 
 ---
 

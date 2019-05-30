@@ -54,7 +54,9 @@
     "imagemin-jpeg-recompress": "^6.0.0",
     "imagemin-pngquant": "^7.0.0",
     "merge2": "^1.2.3",
-    "prettier": "^1.17.1",
+    "prettier": "^1.17.1"
+  },
+  "dependencies": {
     "rfs": "^8.0.4"
   }
 }
