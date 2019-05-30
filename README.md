@@ -27,8 +27,9 @@
 4.  Put icon into scss file with mixin `@include sprite($iconName)`
 
 - Example: 
--     .icon
-          @include sprite($location)
+-     .icon {
+        @include sprite($location);
+      }
 
 #### SVG
 
