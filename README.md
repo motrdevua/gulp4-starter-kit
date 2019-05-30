@@ -10,10 +10,10 @@
 1.  Put ttf file to the directory `'src/assets/fonts/'`.
 2.  Run `gulp fontgen`
 3.  Find file: `'src/assets/sass/parts/_fonttylesheet.scss'`.
-4.  Add font name like: `+font-face('fontname', '../fonts/fontname')`
+4.  Add font name like: `@include font-face('fontname', '../fonts/fontname')`
 
 -   Example:
--     +font-face('Lato-Heavy', '../fonts/Lato-Heavy')
+-     @include font-face('Lato-Heavy', '../fonts/Lato-Heavy')
 
 ### How to use sprites
 
@@ -24,11 +24,11 @@
 3.  Find `'main.scss'` and uncomment strings:
 -     @import modules/mixin-spritePng
       @import tmp/spritePng
-4.  Put icon into scss file with mixin `+sprite($iconName)`
+4.  Put icon into scss file with mixin `@include sprite($iconName)`
 
 - Example: 
 -     .icon
-          +sprite($location)
+          @include sprite($location)
 
 #### SVG
 
