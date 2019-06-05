@@ -1,16 +1,16 @@
 // ====================== Reset ======================
 
-@import "modules/reset";
+@import 'modules/reset';
 
 // ==============  Responsive Font Size  =============
 
-@import "../../../node_modules/rfs/scss";
+@import '../../../node_modules/rfs/scss';
 
 // ===================  Modules  =====================
 
-@import "modules/mixin_font-face";
-@import "modules/fontstylesheet";
-@import "modules/variables";
+@import 'modules/mixin_font-face';
+@import 'modules/fontstylesheet';
+@import 'modules/variables';
 
 // ===================================================
 //      Uncomment if png or svg folder not empty
@@ -22,9 +22,9 @@
 
 // ====================  Default  ====================
 
-// p {
-//   hyphens: auto;
-// }
+p {
+  hyphens: auto;
+}
 
 button,
 a,
@@ -72,7 +72,7 @@ body {
   margin: 0 auto;
   padding: 0 15px;
   width: 100%;
-  max-width: 1230px;
+  max-width: 1170px;
 }
 
 // ===================  Partials  ===================
