@@ -145,11 +145,11 @@ function spritePng() {
   const spriteData = src(`${path.src.img}png/*.png`).pipe(
     plugin.spritesmith({
       imgName: 'sprite.png',
-      cssName: '_spritePng.sass',
+      cssName: '_spritePng.scss',
       cssFormat: 'sass',
       algorithm: 'binary-tree',
       padding: 4,
-      cssTemplate: `${path.src.sass}modules/spritePng.template.sass`,
+      cssTemplate: `${path.src.sass}modules/spritePng.template.scss`,
     })
   );
   const imgStream = spriteData.img.pipe(dest(path.src.img));
@@ -193,9 +193,9 @@ function spriteSvg() {
             dest: './',
             sprite: 'sprite.svg',
             render: {
-              sass: {
-                dest: '../../assets/sass/tmp/_spriteSvg.sass',
-                template: `${path.src.sass}modules/spriteSvg.template.sass`,
+              scss: {
+                dest: '../../assets/sass/tmp/_spriteSvg.scss',
+                template: `${path.src.sass}modules/spriteSvg.template.scss`,
               },
             },
             svg: {
