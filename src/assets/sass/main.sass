@@ -1,0 +1,69 @@
+// ====================== Reset ======================
+
+@import modules/reset
+
+// ==============  Responsive Font Size  =============
+
+@import ../../../node_modules/rfs/scss
+
+// ===================  Modules  =====================
+
+@import modules/mixin_font-face
+@import modules/fontstylesheet
+@import modules/variables
+
+// ===================================================
+//      Uncomment if png or svg folder not empty
+// ===================================================
+// @import modules/mixin-spritePng
+// @import tmp/spritePng
+// @import tmp/spriteSvg
+// ====================  Plugins  ====================
+
+// ====================  Default  ====================
+
+p
+  hyphens: auto
+
+button,
+a,
+input
+  outline: 0
+
+button,
+a
+  cursor: pointer
+
+a
+  text-decoration: none
+
+.icon
+  transition: fill ease-in-out 0.2s
+
+*,
+*:before,
+*:after
+  box-sizing: border-box
+
+body
+  +rfs(16)
+  font-family: $mainFont
+  color: $textColor
+  line-height: 1.6
+
+html,
+body
+  margin: 0
+  padding: 0
+  height: 100%
+
+.container
+  display: flex
+  flex-direction: column
+  justify-content: center
+  margin: 0 auto
+  padding: 0 15px
+  width: 100%
+  max-width: 1170px
+
+// ===================  Partials  ===================
