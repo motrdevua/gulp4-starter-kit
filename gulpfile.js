@@ -26,7 +26,7 @@ const onError = err => {
 const path = {
   src: {
     html: 'src/*.{htm,html,php}',
-    sass: 'src/assets/sass/',
+    styles: 'src/assets/styles/',
     js: 'src/assets/js/',
     img: 'src/assets/img/',
     fonts: 'src/assets/fonts/',
@@ -53,7 +53,7 @@ function html() {
 /* ===================  styles  =================== */
 
 function styles() {
-  return src(`${path.src.sass}*.{sass,scss}`, {
+  return src(`${path.src.styles}*.scss`, {
     sourcemaps: true,
   })
     .pipe(
@@ -66,12 +66,7 @@ function styles() {
         outputStyle: 'expanded',
       })
     )
-    .pipe(
-      plugin.autoprefixer({
-        browsers: ['last 8 versions'],
-        cascade: true,
-      })
-    )
+    .pipe(plugin.autoprefixer())
     .pipe(
       plugin.cleanCSS(
         {
@@ -119,10 +114,7 @@ function js() {
       plugin.include({
         extensions: 'js',
         hardFail: true,
-        includePaths: [
-          `${__dirname}/node_modules`,
-          `${__dirname}/src/assets/js/components`,
-        ],
+        includePaths: [`${__dirname}/node_modules`],
       })
     )
     .pipe(plugin.uglify()) // {mangle: false}
@@ -145,15 +137,15 @@ function spritePng() {
   const spriteData = src(`${path.src.img}png/*.png`).pipe(
     plugin.spritesmith({
       imgName: 'sprite.png',
-      cssName: '_spritePng.sass',
-      cssFormat: 'sass',
+      cssName: '_spritePng.scss',
+      cssFormat: 'scss',
       algorithm: 'binary-tree',
       padding: 4,
-      cssTemplate: `${path.src.sass}modules/spritePng.template.sass`,
+      cssTemplate: `${path.src.styles}modules/spritePng.template.scss`,
     })
   );
   const imgStream = spriteData.img.pipe(dest(path.src.img));
-  const cssStream = spriteData.css.pipe(dest(`${path.src.sass}tmp/`));
+  const cssStream = spriteData.css.pipe(dest(`${path.src.styles}tmp/`));
   return merge2(imgStream, cssStream);
 }
 
@@ -193,9 +185,9 @@ function spriteSvg() {
             dest: './',
             sprite: 'sprite.svg',
             render: {
-              sass: {
-                dest: '../../assets/sass/tmp/_spriteSvg.sass',
-                template: `${path.src.sass}modules/spriteSvg.template.sass`,
+              scss: {
+                dest: '../../assets/styles/tmp/_spriteSvg.scss',
+                template: `${path.src.styles}modules/spriteSvg.template.scss`,
               },
             },
             svg: {
@@ -272,7 +264,7 @@ function fonts() {
 
 function watchFiles() {
   watch(path.src.html, html).on('change', reload);
-  watch(path.src.sass, styles);
+  watch(path.src.styles, styles);
   watch(path.src.js, js).on('change', reload);
   watch(path.src.img, images);
   watch(`${path.src.img}png/*.png`, spritePng);
@@ -286,7 +278,7 @@ function clean() {
   return del([
     path.dist,
     `${path.src.fonts}**/*.css`,
-    `${path.src.sass}tmp`,
+    `${path.src.styles}tmp`,
     `${path.src.img}sprite.{png,svg}`,
   ]).then(dir => {
     console.log('Deleted files and folders:\n', dir.join('\n'));

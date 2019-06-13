@@ -9,33 +9,37 @@
 
 1.  Put ttf file to the directory `'src/assets/fonts/'`.
 2.  Run `gulp fontgen`
-3.  Find file: `'src/assets/sass/parts/_fonttylesheet.sass'`.
-4.  Add font name like: `+font-face('fontname', '../fonts/fontname')`
+3.  Find file: `'src/assets/styles/parts/_fonttylesheet.scss'`.
+4.  Add font name like: `@include font-face('fontname', '../fonts/fontname');`
 
--   Example:
--     +font-face('Lato-Heavy', '../fonts/Lato-Heavy')
+- Example:
+-     @include font-face("Lato-Heavy", "../fonts/Lato-Heavy");
 
 ### How to use sprites
 
 #### PNG
 
 1.  Uncomment `'spritePng'` in `'build'` task in `gulpfile.js`.
-2.  Put *.png icons into folder `src/assets/img/png`.
-3.  Find `'main.sass'` and uncomment strings:
+2.  Put \*.png icons into folder `src/assets/img/png`.
+3.  Find `'main.scss'` and uncomment strings:
+
 -     @import modules/mixin-spritePng
       @import tmp/spritePng
-4.  Put icon into scss file with mixin `+sprite($iconName)`
 
-- Example: 
--     .icon
-        +sprite($location)
+4.  Put icon into scss file with mixin `@include sprite($iconName)`
+
+- Example:
+-     .icon {
+        @include sprite($location);
+      }
 
 #### SVG
 
 1.  Uncomment `'spriteSvg'` in `'build'` task in `gulpfile.js`
-2.  Uncomment string `@import tmp/spriteSvg` in `'main.sass'`.
+2.  Uncomment string `@import tmp/spriteSvg` in `'main.scss'`.
 3.  Uncomment string `//= require assets/img/sprite.svg` in `index.html`
 4.  Put icon into html:
+
 -     <svg class="icon iconName">
           <use xlink:href="#iconName"></use>
       </svg>
@@ -44,11 +48,11 @@
 
 ### Run build
 
-`yarn build` or `npm run build` or `gulp`
+`gulp` or `yarn build` or `npm run build`
 
 ### Clean
 
-`yarn clean` or `npm run clean` or `gulp clean`
+`gulp clean` or `yarn clean` or `npm run clean`
 
 ---
 

@@ -11,12 +11,18 @@
     "type": "git",
     "url": "git+https://github.com/motrdevua/gulp4-starter-kit.git"
   },
-  "author": "motr",
+  "author": "motrdevua",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/motrdevua/gulp4-starter-kit/issues"
   },
   "homepage": "https://github.com/motrdevua/gulp4-starter-kit#readme",
+  "browserslist": [
+    "last 5 version",
+    "> 1%",
+    "maintained node versions",
+    "not dead"
+  ],
   "devDependencies": {
     "@babel/core": "^7.4.4",
     "@babel/preset-env": "^7.4.4",
@@ -57,6 +63,7 @@
     "prettier": "^1.17.1"
   },
   "dependencies": {
+    "normalize.css": "^8.0.1",
     "rfs": "^8.0.4"
   }
 }
