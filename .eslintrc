@@ -8,7 +8,8 @@
   },
   "extends": ["airbnb-base", "prettier"],
   "rules": {
-    "no-console": 0
+    "no-console": 0,
+    "func-names": ["error", "never"]
   },
   "plugins": ["dollar-sign", "jquery"]
 }
