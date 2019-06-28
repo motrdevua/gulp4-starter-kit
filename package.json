@@ -64,7 +64,6 @@
     "prettier": "^1.18.2"
   },
   "dependencies": {
-    "normalize.css": "^8.0.1",
     "rfs": "^8.0.4"
   }
 }
