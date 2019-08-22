@@ -22,8 +22,6 @@ const { reload } = browserSync;
 const dev = plugin.environments.development;
 const prod = plugin.environments.production;
 
-const isDev = true; // change to false for build
-
 const onError = err => {
   plugin.notify.onError({
     title: `Error in ${err.plugin}`,
@@ -49,11 +47,11 @@ const path = {
 /* ===============   webpackConfig  =============== */
 
 const webpackConfig = {
-  mode: isDev ? 'development' : 'production',
+  mode: dev() ? 'development' : 'production',
   output: {
     filename: `[name].js`,
   },
-  devtool: isDev ? 'eval-source-map' : 'none',
+  devtool: dev() ? 'eval-source-map' : 'none',
   optimization: {
     minimizer: [new TerserJSPlugin({})],
     splitChunks: {
