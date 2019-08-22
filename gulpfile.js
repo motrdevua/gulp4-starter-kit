@@ -3,15 +3,26 @@ const plugin = require('gulp-load-plugins')({
   rename: {
     'gulp-clean-css': 'cleanCSS',
     'gulp-svg-sprite': 'spriteSVG',
+    'gulp-group-css-media-queries': 'gcmq',
   },
 });
+
 const imageminJR = require('imagemin-jpeg-recompress');
 const pngquant = require('imagemin-pngquant');
 const merge2 = require('merge2');
 const del = require('del');
 const browserSync = require('browser-sync').create();
 
+const webpack = require('webpack');
+const stream = require('webpack-stream');
+const TerserJSPlugin = require('terser-webpack-plugin');
+
 const { reload } = browserSync;
+
+const dev = plugin.environments.development;
+const prod = plugin.environments.production;
+
+const isDev = true; // change to false for build
 
 const onError = err => {
   plugin.notify.onError({
@@ -26,12 +37,53 @@ const onError = err => {
 const path = {
   src: {
     html: 'src/*.{htm,html,php}',
-    styles: 'src/assets/styles/',
-    js: 'src/assets/js/',
-    img: 'src/assets/img/',
-    fonts: 'src/assets/fonts/',
+    styles: 'src/styles/',
+    js: 'src/js/',
+    img: 'src/img/',
+    fonts: 'src/fonts/',
   },
+  assets: 'dist/assets/',
   dist: 'dist/',
+};
+
+/* ===============   webpackConfig  =============== */
+
+const webpackConfig = {
+  mode: isDev ? 'development' : 'production',
+  output: {
+    filename: `[name].js`,
+  },
+  devtool: isDev ? 'eval-source-map' : 'none',
+  optimization: {
+    minimizer: [new TerserJSPlugin({})],
+    splitChunks: {
+      chunks: 'all',
+    },
+  },
+  module: {
+    rules: [
+      {
+        test: /\.m?js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+        },
+      },
+    ],
+  },
+  plugins: [
+    new webpack.SourceMapDevToolPlugin({
+      filename: '[file].map',
+    }),
+    new webpack.ProvidePlugin({
+      $: 'jquery',
+      jQuery: 'jquery',
+      'window.jQuery': 'jquery',
+    }),
+  ],
+  resolve: {
+    modules: ['node_modules'],
+  },
 };
 
 /* ===================   serve  =================== */
@@ -53,9 +105,8 @@ function html() {
 /* ===================  styles  =================== */
 
 function styles() {
-  return src(`${path.src.styles}*.scss`, {
-    sourcemaps: true,
-  })
+  return src(`${path.src.styles}*.{sass,scss}`)
+    .pipe(dev(plugin.sourcemaps.init()))
     .pipe(
       plugin.plumber({
         errorHandler: onError,
@@ -67,68 +118,43 @@ function styles() {
       })
     )
     .pipe(plugin.autoprefixer())
+    .pipe(plugin.gcmq())
     .pipe(
-      plugin.cleanCSS(
-        {
-          level: 2,
-          debug: true,
-        },
-        details => {
-          console.log(`${details.name}: ${details.stats.originalSize}`);
-          console.log(`${details.name}: ${details.stats.minifiedSize}`);
-        }
+      prod(
+        plugin.cleanCSS(
+          {
+            level: 2,
+            debug: true,
+          },
+          details => {
+            console.log(`${details.name}: ${details.stats.originalSize}`);
+            console.log(`${details.name}: ${details.stats.minifiedSize}`);
+          }
+        )
       )
     )
     .pipe(
       plugin.rename({
-        basename: 'style',
         suffix: '.min',
         extname: '.css',
       })
     )
-    .pipe(
-      dest(`${path.dist}assets/css`, {
-        sourcemaps: '.',
-      })
-    )
+    .pipe(dev(plugin.sourcemaps.write('.')))
+    .pipe(dest(`${path.assets}css`))
     .pipe(browserSync.stream());
 }
 
 /* =====================  js  ===================== */
 
 function js() {
-  return src(`${path.src.js}*.js`, {
-    sourcemaps: true,
-  })
+  return src(`${path.src.js}main.js`)
     .pipe(
       plugin.plumber({
         errorHandler: onError,
       })
     )
-    .pipe(
-      plugin.babel({
-        presets: ['@babel/env'],
-      })
-    )
-    .pipe(
-      plugin.include({
-        extensions: 'js',
-        hardFail: true,
-        includePaths: [`${__dirname}/node_modules`],
-      })
-    )
-    .pipe(plugin.uglify()) // {mangle: false}
-    .pipe(
-      plugin.rename({
-        suffix: '.min',
-        extname: '.js',
-      })
-    )
-    .pipe(
-      dest(`${path.dist}assets/js`, {
-        sourcemaps: '.',
-      })
-    );
+    .pipe(stream(webpackConfig))
+    .pipe(dest(`${path.assets}js`));
 }
 
 /* =====================  png  ==================== */
@@ -207,40 +233,42 @@ function spriteSvg() {
 
 /* ===================  images  =================== */
 
-function images() {
+function img() {
   return src([`${path.src.img}**/*.*`, `!${path.src.img}{png,svg}/*.*`])
     .pipe(
-      plugin.cache(
-        plugin.imagemin(
-          [
-            plugin.imagemin.gifsicle({
-              interlaced: true,
-            }),
-            plugin.imagemin.jpegtran({
-              progressive: true,
-            }),
-            imageminJR({
-              loops: 5,
-              min: 65,
-              max: 70,
-              quality: 'medium',
-            }),
-            plugin.imagemin.svgo(),
-            plugin.imagemin.optipng({
-              optimizationLevel: 3,
-            }),
-            pngquant({
-              quality: [0.65, 0.7],
-              speed: 5,
-            }),
-          ],
-          {
-            verbose: true,
-          }
+      prod(
+        plugin.cache(
+          plugin.imagemin(
+            [
+              plugin.imagemin.gifsicle({
+                interlaced: true,
+              }),
+              plugin.imagemin.jpegtran({
+                progressive: true,
+              }),
+              imageminJR({
+                loops: 5,
+                min: 65,
+                max: 70,
+                quality: 'medium',
+              }),
+              plugin.imagemin.svgo(),
+              plugin.imagemin.optipng({
+                optimizationLevel: 3,
+              }),
+              pngquant({
+                quality: [0.65, 0.7],
+                speed: 5,
+              }),
+            ],
+            {
+              verbose: true,
+            }
+          )
         )
       )
     )
-    .pipe(dest(`${path.dist}assets/img`));
+    .pipe(dest(`${path.assets}img`));
 }
 
 /* ===================  fontgen  ================== */
@@ -256,7 +284,7 @@ function fontgen() {
 
 function fonts() {
   return src(`${path.src.fonts}**/*.{svg,eot,ttf,woff,woff2}`).pipe(
-    dest(`${path.dist}assets/fonts`)
+    dest(`${path.assets}fonts`)
   );
 }
 
@@ -266,7 +294,7 @@ function watchFiles() {
   watch(path.src.html, html).on('change', reload);
   watch(path.src.styles, styles);
   watch(path.src.js, js).on('change', reload);
-  watch(path.src.img, images);
+  watch(path.src.img, img);
   watch(`${path.src.img}png/*.png`, spritePng);
   watch(`${path.src.img}svg/*.svg`, spriteSvg);
 }
@@ -285,23 +313,34 @@ function clean() {
   });
 }
 
-/* ===================  build  ==================== */
-
-const build = series(
-  clean,
-  // spritePng,
-  // spriteSvg,
-  parallel(html, styles, js, images, fonts),
-  parallel(watchFiles, serve)
-);
+/* ===================  exports  ================== */
 
 exports.html = html;
 exports.styles = styles;
 exports.js = js;
-exports.images = images;
+exports.img = img;
 exports.spritePng = spritePng;
 exports.spriteSvg = spriteSvg;
 exports.fontgen = fontgen;
 exports.fonts = fonts;
 exports.clean = clean;
-exports.default = build;
+exports.watch = watchFiles;
+
+/* ====================  dev  ===================== */
+
+exports.default = series(
+  clean,
+  // spritePng,
+  // spriteSvg,
+  parallel(html, styles, js, img, fonts),
+  parallel(watchFiles, serve)
+);
+
+/* ===================  build  ==================== */
+
+exports.build = series(
+  clean,
+  // spritePng,
+  // spriteSvg,
+  parallel(html, styles, js, img, fonts)
+);

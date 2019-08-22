@@ -1,0 +1,70 @@
+// ===================  Modules  ==========================
+
+// @import 'modules/reset';
+@import 'modules/normalize';
+@import 'modules/mixin_font-face';
+@import 'modules/fontstylesheet';
+@import 'modules/variables';
+
+// ==============  Responsive Font Size  ==================
+
+@import '../../node_modules/rfs/scss';
+
+// ========================================================
+//      Uncomment if png or svg folder not empty
+// ========================================================
+//
+// @import 'modules/mixin-spritePng';
+// @import 'tmp/spritePng';
+// @import 'tmp/spriteSvg';
+
+// ====================  Plugins  =========================
+
+// Bootstrap
+
+@import '../../node_modules/bootstrap/scss/bootstrap-grid';
+
+// ====================  Default  =========================
+
+p {
+  hyphens: auto;
+}
+
+button,
+a,
+input {
+  outline: 0;
+}
+
+button,
+a {
+  cursor: pointer;
+}
+
+a {
+  text-decoration: none;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  transition: all .2s linear;
+}
+
+li {
+  list-style-type: none;
+}
+
+body {
+  color: $main-color;
+  @include rfs(16);
+}
+
+// ====================  Partials  ========================
+
+
+
+// =====================  Media  ==========================
+
+@import 'partials/media';

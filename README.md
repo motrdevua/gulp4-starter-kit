@@ -1,5 +1,7 @@
 # Gulp4 starter-kit
 
+Gulp 4 + Webpack 4
+
 ## Installation
 
 1.  `git clone https://github.com/motrdevua/gulp4-starter-kit.git`
@@ -46,11 +48,17 @@
 
 ---
 
-### Run build
+### Run gulp in development mode
 
-`gulp` or `npm run build`
+`gulp` or `npm run dev`
 
-### Clean
+### Make build
+
+In gulpfile.js change isDev to false `const isDev = false;`
+
+`npm run build`
+
+### To clean run
 
 `gulp clean` or `npm run clean`
 
