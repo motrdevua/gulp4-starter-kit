@@ -34,7 +34,7 @@ const onError = err => {
 
 const path = {
   src: {
-    html: 'src/*.{htm,html,php}',
+    pug: 'src/pug/pages/',
     styles: 'src/styles/',
     js: 'src/js/',
     img: 'src/img/',
@@ -92,11 +92,17 @@ function serve() {
   });
 }
 
-/* ====================  html  ==================== */
+/* =====================  pug  ==================== */
 
-function html() {
-  return src(path.src.html)
-    .pipe(plugin.include())
+function pug() {
+  return src(`${path.src.pug}*.pug`)
+    .pipe(
+      plugin.plumber({
+        errorHandler: onError,
+      })
+    )
+    .pipe(plugin.pug())
+    .pipe(dev(plugin.beautify.html({ indent_size: 2 })))
     .pipe(dest(path.dist));
 }
 
@@ -137,6 +143,7 @@ function styles() {
         extname: '.css',
       })
     )
+    .pipe(dev(plugin.beautify.css({ indent_size: 2 })))
     .pipe(dev(plugin.sourcemaps.write('.')))
     .pipe(dest(`${path.assets}css`))
     .pipe(browserSync.stream());
@@ -289,7 +296,7 @@ function fonts() {
 /* ====================  watch  =================== */
 
 function watchFiles() {
-  watch(path.src.html, html).on('change', reload);
+  watch(path.src.pug, pug).on('change', reload);
   watch(path.src.styles, styles);
   watch(path.src.js, js).on('change', reload);
   watch(path.src.img, img);
@@ -313,7 +320,7 @@ function clean() {
 
 /* ===================  exports  ================== */
 
-exports.html = html;
+exports.pug = pug;
 exports.styles = styles;
 exports.js = js;
 exports.img = img;
@@ -330,7 +337,7 @@ exports.default = series(
   clean,
   // spritePng,
   // spriteSvg,
-  parallel(html, styles, js, img, fonts),
+  parallel(pug, styles, js, img, fonts),
   parallel(watchFiles, serve)
 );
 
@@ -340,5 +347,5 @@ exports.build = series(
   clean,
   // spritePng,
   // spriteSvg,
-  parallel(html, styles, js, img, fonts)
+  parallel(pug, styles, js, img, fonts)
 );
