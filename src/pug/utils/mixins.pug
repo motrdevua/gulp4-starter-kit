@@ -5,3 +5,15 @@ mixin icon(name, mod)
   else
     svg(class="icon icon--" + name)
       use(xlink:href="img/spriteSvg.svg#sprite-" + name)
+
+mixin btn-book(mod)
+  button(type="button" class="btn-book" + " btn-book" + "--" + mod)
+    | Book a Car
+
+mixin btn-book-this(mod)
+  button(type="button" class="btn-book" + " btn-book" + "--" + mod)
+    | Book this Car
+
+mixin btn-book-safe(mod)
+  button(type="button" class="btn-book" + " btn-book" + "--" + mod)
+    | BOOK YOUR SAFE RIDE IN KIEV (UKRAINE) NOW

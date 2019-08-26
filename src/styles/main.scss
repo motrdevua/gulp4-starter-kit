@@ -6,7 +6,11 @@
 @import 'modules/fontstylesheet';
 @import 'modules/variables';
 
-// ==============  Responsive Font Size  ==================
+// Bootstrap
+
+@import '../../node_modules/bootstrap/scss/bootstrap-grid';
+
+// Rfs
 
 @import '../../node_modules/rfs/scss';
 
@@ -17,12 +21,6 @@
 // @import 'modules/mixin-spritePng';
 // @import 'tmp/spritePng';
 // @import 'tmp/spriteSvg';
-
-// ====================  Plugins  =========================
-
-// Bootstrap
-
-@import '../../node_modules/bootstrap/scss/bootstrap-grid';
 
 // ====================  Default  =========================
 
@@ -57,13 +55,16 @@ li {
 }
 
 body {
-  color: $main-color;
-  @include rfs(16);
+  font-family: $main-font;
+  line-height: 24px;
+  color: $black;
+  @include rfs(18);
 }
 
 // ====================  Partials  ========================
 
-
+@import 'partials/header';
+@import 'partials/footer';
 
 // =====================  Media  ==========================
 

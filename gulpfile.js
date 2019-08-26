@@ -34,11 +34,12 @@ const onError = err => {
 
 const path = {
   src: {
-    pug: 'src/pug/pages/',
+    pug: 'src/pug/',
     styles: 'src/styles/',
     js: 'src/js/',
     img: 'src/img/',
     fonts: 'src/fonts/',
+    static: 'src/static/',
   },
   assets: 'dist/assets/',
   dist: 'dist/',
@@ -92,6 +93,12 @@ function serve() {
   });
 }
 
+/* ===================  static  =================== */
+
+function static() {
+  return src(`${path.src.static}*.*`).pipe(dest(path.dist));
+}
+
 /* =====================  pug  ==================== */
 
 function pug() {
@@ -102,7 +109,7 @@ function pug() {
       })
     )
     .pipe(plugin.pug())
-    .pipe(dev(plugin.beautify.html({ indent_size: 2 })))
+    .pipe(prod(plugin.beautify.html({ indent_size: 2 })))
     .pipe(dest(path.dist));
 }
 
@@ -136,12 +143,6 @@ function styles() {
           }
         )
       )
-    )
-    .pipe(
-      plugin.rename({
-        suffix: '.min',
-        extname: '.css',
-      })
     )
     .pipe(dev(plugin.beautify.css({ indent_size: 2 })))
     .pipe(dev(plugin.sourcemaps.write('.')))
@@ -320,6 +321,7 @@ function clean() {
 
 /* ===================  exports  ================== */
 
+exports.static = static;
 exports.pug = pug;
 exports.styles = styles;
 exports.js = js;
@@ -337,7 +339,7 @@ exports.default = series(
   clean,
   // spritePng,
   // spriteSvg,
-  parallel(pug, styles, js, img, fonts),
+  parallel(static, pug, styles, js, img, fonts),
   parallel(watchFiles, serve)
 );
 
@@ -347,5 +349,5 @@ exports.build = series(
   clean,
   // spritePng,
   // spriteSvg,
-  parallel(pug, styles, js, img, fonts)
+  parallel(static, pug, styles, js, img, fonts)
 );
