@@ -39,7 +39,7 @@ const path = {
     js: 'src/js/',
     img: 'src/img/',
     fonts: 'src/fonts/',
-    statics: 'src/static/',
+    static: 'src/static/',
   },
   assets: 'dist/assets/',
   dist: 'dist/',
