@@ -39,7 +39,7 @@ const path = {
     js: 'src/js/',
     img: 'src/img/',
     fonts: 'src/fonts/',
-    static: 'src/static/',
+    statics: 'src/static/',
   },
   assets: 'dist/assets/',
   dist: 'dist/',
@@ -95,7 +95,7 @@ function serve() {
 
 /* ===================  static  =================== */
 
-function static() {
+function statics() {
   return src(`${path.src.static}*.*`).pipe(dest(path.dist));
 }
 
@@ -184,57 +184,59 @@ function spritePng() {
 /* =====================  svg  ==================== */
 
 function spriteSvg() {
-  return src(`${path.src.img}svg/*.svg`)
-    .pipe(
-      plugin.plumber({
-        errorHandler: onError,
-      })
-    )
-    .pipe(
-      plugin.svgmin({
-        js2svg: {
-          pretty: true,
-        },
-      })
-    )
-    .pipe(
-      plugin.cheerio({
-        run: $ => {
-          $('[fill]').removeAttr('fill');
-          $('[stroke]').removeAttr('stroke');
-          $('[style]').removeAttr('style');
-        },
-        parserOptions: {
-          xmlMode: true,
-        },
-      })
-    )
-    .pipe(plugin.replace('&gt;', '>'))
-    .pipe(
-      plugin.spriteSVG({
-        mode: {
-          symbol: {
-            dest: './',
-            sprite: 'sprite.svg',
-            render: {
-              scss: {
-                dest: '../../assets/styles/tmp/_spriteSvg.scss',
-                template: `${path.src.styles}modules/spriteSvg.template.scss`,
+  return (
+    src(`${path.src.img}svg/*.svg`)
+      .pipe(
+        plugin.plumber({
+          errorHandler: onError,
+        })
+      )
+      .pipe(
+        plugin.svgmin({
+          js2svg: {
+            pretty: true,
+          },
+        })
+      )
+      .pipe(
+        plugin.cheerio({
+          run: $ => {
+            $('[fill]').removeAttr('fill');
+            $('[stroke]').removeAttr('stroke');
+            $('[style]').removeAttr('style');
+          },
+          parserOptions: {
+            xmlMode: true,
+          },
+        })
+      )
+      .pipe(plugin.replace('&gt;', '>'))
+      .pipe(
+        plugin.spriteSVG({
+          mode: {
+            symbol: {
+              dest: './',
+              sprite: 'spriteSvg.svg',
+              render: {
+                scss: {
+                  dest: '../styles/tmp/_spriteSvg.scss',
+                  template: `${path.src.styles}modules/spriteSvg.template.scss`,
+                },
               },
-            },
-            svg: {
-              xmlDeclaration: false,
-              doctypeDeclaration: false,
-              rootAttributes: {
-                style: 'display:none;',
-                'aria-hidden': 'true',
+              svg: {
+                xmlDeclaration: false,
+                doctypeDeclaration: false,
+                rootAttributes: {
+                  style: 'display:none;',
+                  'aria-hidden': 'true',
+                },
               },
             },
           },
-        },
-      })
-    )
-    .pipe(dest(path.src.img));
+        })
+      )
+      .pipe(dest(path.src.img))
+  );
 }
 
 /* ===================  images  =================== */
@@ -321,7 +323,7 @@ function clean() {
 
 /* ===================  exports  ================== */
 
-exports.static = static;
+exports.statics = statics;
 exports.pug = pug;
 exports.styles = styles;
 exports.js = js;
@@ -339,7 +341,7 @@ exports.default = series(
   clean,
   // spritePng,
   // spriteSvg,
-  parallel(static, pug, styles, js, img, fonts),
+  parallel(statics, pug, styles, js, img, fonts),
   parallel(watchFiles, serve)
 );
 
@@ -349,5 +351,5 @@ exports.build = series(
   clean,
   // spritePng,
   // spriteSvg,
-  parallel(static, pug, styles, js, img, fonts)
+  parallel(statics, pug, styles, js, img, fonts)
 );
