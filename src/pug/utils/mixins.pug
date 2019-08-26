@@ -2,7 +2,7 @@
 mixin icon(name,mod)
   if(mod)
     svg(class="icon icon--" + name + ' ' + mod)
-      use(xlink:href="assets/img/spriteSvg.svg#" + name)
+      use(xlink:href="#" + name)
   else
     svg(class="icon icon--" + name)
-      use(xlink:href="assets/img/spriteSvg.svg#" + name)
+      use(xlink:href="#" + name)
