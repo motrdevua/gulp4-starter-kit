@@ -9,9 +9,9 @@ Gulp 4 + Webpack 4
 
 ### Generate required fonts (ttf, eot, woff, woff2, svg) from a ttf file
 
-1. Put ttf file to the directory `'src/assets/fonts/'`.
+1. Put ttf file to the directory `'src/fonts/'`.
 2. Run `gulp fontgen`
-3. Find file: `'src/assets/styles/parts/_fonttylesheet.scss'`.
+3. Find file: `'src/styles/modules/_fonttylesheet.scss'`.
 4. Add font name like: `@include font-face('fontname', '../fonts/fontname');`
 
 - Example:
@@ -22,7 +22,7 @@ Gulp 4 + Webpack 4
 #### PNG
 
 1. Uncomment `'spritePng'` in `'build'` task in `gulpfile.js`.
-2. Put \*.png icons into folder `src/assets/img/png`.
+2. Put \*.png icons into folder `src/img/png`.
 3. Find `'main.scss'` and uncomment strings:
 
 - @import modules/mixin-spritePng
@@ -39,7 +39,8 @@ Gulp 4 + Webpack 4
 
 1. Uncomment `'spriteSvg'` in `'build'` task in `gulpfile.js`
 2. Uncomment string `@import tmp/spriteSvg` in `'main.scss'`.
-3. Use icon as html element with pug mixin +icon('iconname', 'modifier')
+2. Uncomment string `include ../../img/spriteSvg.svg` in `'template.pug'`.
+4. Use icon as html element with pug mixin +icon('iconname', 'modifier')
 
 - Example:
 -     +icon('iconname')
