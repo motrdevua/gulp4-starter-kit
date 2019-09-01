@@ -39,7 +39,7 @@ Gulp 4 + Webpack 4
 
 1. Uncomment `'spriteSvg'` in `'build'` task in `gulpfile.js`
 2. Uncomment string `@import tmp/spriteSvg` in `'main.scss'`.
-2. Uncomment string `//=require img/spriteSvg.svg` in `'index.html'`.
+2. Uncomment string `//=require spriteSvg.svg` in `'index.html'`.
 4. Use icon as html element:
 
 - Example:
