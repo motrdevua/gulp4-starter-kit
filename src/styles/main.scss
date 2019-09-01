@@ -1,10 +1,10 @@
-// ===================  Modules  ==========================
+// =====================  utils  ==========================
 
-// @import 'modules/reset';
-@import 'modules/normalize';
-@import 'modules/mixin_font-face';
-@import 'modules/fontstylesheet';
-@import 'modules/variables';
+// @import 'utils/reset';
+@import 'utils/normalize';
+@import 'utils/mixin_font-face';
+@import 'utils/fontstylesheet';
+@import 'utils/variables';
 
 // Bootstrap
 
@@ -18,7 +18,7 @@
 //      Uncomment if png or svg folder not empty
 // ========================================================
 //
-// @import 'modules/mixin-spritePng';
+// @import 'utils/mixin-spritePng';
 // @import 'tmp/spritePng';
 // @import 'tmp/spriteSvg';
 
@@ -61,11 +61,11 @@ body {
   @include rfs(18);
 }
 
-// ====================  Partials  ========================
+// =====================  modules  ========================
 
-@import 'partials/header';
-@import 'partials/footer';
+@import 'modules/header';
+@import 'modules/footer';
 
 // =====================  Media  ==========================
 
-@import 'partials/media';
+@import 'modules/media';

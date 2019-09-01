@@ -11,7 +11,7 @@ Gulp 4 + Webpack 4
 
 1. Put ttf file to the directory `'src/fonts/'`.
 2. Run `gulp fontgen`
-3. Find file: `'src/styles/modules/_fonttylesheet.scss'`.
+3. Find file: `'src/styles/utils/_fonttylesheet.scss'`.
 4. Add font name like: `@include font-face('fontname', '../fonts/fontname');`
 
 - Example:
@@ -25,7 +25,7 @@ Gulp 4 + Webpack 4
 2. Put \*.png icons into folder `src/img/png`.
 3. Find `'main.scss'` and uncomment strings:
 
-- @import modules/mixin-spritePng
+- @import utils/mixin-spritePng
   @import tmp/spritePng
 
 4. Put icon into scss file with mixin `@include sprite($iconname)`
@@ -39,25 +39,27 @@ Gulp 4 + Webpack 4
 
 1. Uncomment `'spriteSvg'` in `'build'` task in `gulpfile.js`
 2. Uncomment string `@import tmp/spriteSvg` in `'main.scss'`.
-2. Uncomment string `include ../../img/spriteSvg.svg` in `'template.pug'`.
-4. Use icon as html element with pug mixin +icon('iconname', 'modifier')
+2. Uncomment string `//=require img/spriteSvg.svg` in `'index.html'`.
+4. Use icon as html element:
 
 - Example:
--     +icon('iconname')
+-      <svg class="icon icon-iconName icon-iconName--mod">
+         <use xlink:href="#iconName"></use>
+       </svg>
 
 ---
 
 ### Run gulp in development mode
 
-`gulp` or `npm run dev`
+`npm run dev`
 
 ### Make build
 
-`npm run build`
+`npm run prod`
 
 ### To clean run
 
-`gulp clean` or `npm run clean`
+`npm run clean`
 
 ---
 

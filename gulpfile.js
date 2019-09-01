@@ -34,7 +34,7 @@ const onError = err => {
 
 const path = {
   src: {
-    pug: 'src/pug/',
+    root: 'src/',
     styles: 'src/styles/',
     js: 'src/js/',
     img: 'src/img/',
@@ -93,23 +93,20 @@ function serve() {
   });
 }
 
-/* ===================  static  =================== */
+/* ====================  html  ==================== */
 
-function statics() {
-  return src(`${path.src.static}*.*`).pipe(dest(path.dist));
-}
-
-/* =====================  pug  ==================== */
-
-function pug() {
-  return src(`${path.src.pug}*.pug`)
+function html() {
+  return src(`${path.src.root}*.html`)
+    .pipe(
+      plugin.include({
+        includePaths: [`${__dirname}/node_modules`, `${__dirname}/src/modules`],
+      })
+    )
     .pipe(
       plugin.plumber({
         errorHandler: onError,
       })
     )
-    .pipe(plugin.pug())
-    .pipe(prod(plugin.beautify.html({ indent_size: 2 })))
     .pipe(dest(path.dist));
 }
 
@@ -144,7 +141,6 @@ function styles() {
         )
       )
     )
-    .pipe(dev(plugin.beautify.css({ indent_size: 2 })))
     .pipe(dev(plugin.sourcemaps.write('.')))
     .pipe(dest(`${path.assets}css`))
     .pipe(browserSync.stream());
@@ -173,7 +169,7 @@ function spritePng() {
       cssFormat: 'scss',
       algorithm: 'binary-tree',
       padding: 4,
-      cssTemplate: `${path.src.styles}modules/spritePng.template.scss`,
+      cssTemplate: `${path.src.styles}utils/spritePng.template.scss`,
     })
   );
   const imgStream = spriteData.img.pipe(dest(path.src.img));
@@ -184,59 +180,57 @@ function spritePng() {
 /* =====================  svg  ==================== */
 
 function spriteSvg() {
-  return (
-    src(`${path.src.img}svg/*.svg`)
-      .pipe(
-        plugin.plumber({
-          errorHandler: onError,
-        })
-      )
-      .pipe(
-        plugin.svgmin({
-          js2svg: {
-            pretty: true,
-          },
-        })
-      )
-      .pipe(
-        plugin.cheerio({
-          run: $ => {
-            $('[fill]').removeAttr('fill');
-            $('[stroke]').removeAttr('stroke');
-            $('[style]').removeAttr('style');
-          },
-          parserOptions: {
-            xmlMode: true,
-          },
-        })
-      )
-      .pipe(plugin.replace('&gt;', '>'))
-      .pipe(
-        plugin.spriteSVG({
-          mode: {
-            symbol: {
-              dest: './',
-              sprite: 'spriteSvg.svg',
-              render: {
-                scss: {
-                  dest: '../styles/tmp/_spriteSvg.scss',
-                  template: `${path.src.styles}modules/spriteSvg.template.scss`,
-                },
+  return src(`${path.src.img}svg/*.svg`)
+    .pipe(
+      plugin.plumber({
+        errorHandler: onError,
+      })
+    )
+    .pipe(
+      plugin.svgmin({
+        js2svg: {
+          pretty: true,
+        },
+      })
+    )
+    .pipe(
+      plugin.cheerio({
+        run: $ => {
+          $('[fill]').removeAttr('fill');
+          $('[stroke]').removeAttr('stroke');
+          $('[style]').removeAttr('style');
+        },
+        parserOptions: {
+          xmlMode: true,
+        },
+      })
+    )
+    .pipe(plugin.replace('&gt;', '>'))
+    .pipe(
+      plugin.spriteSVG({
+        mode: {
+          symbol: {
+            dest: './',
+            sprite: 'spriteSvg.svg',
+            render: {
+              scss: {
+                dest: '../styles/tmp/_spriteSvg.scss',
+                template: `${path.src.styles}utils/spriteSvg.template.scss`,
               },
-              svg: {
-                xmlDeclaration: false,
-                doctypeDeclaration: false,
-                rootAttributes: {
-                  style: 'display:none;',
-                  'aria-hidden': 'true',
-                },
+            },
+            svg: {
+              xmlDeclaration: false,
+              doctypeDeclaration: false,
+              rootAttributes: {
+                style: 'display:none;',
+                'aria-hidden': 'true',
               },
             },
           },
-        })
-      )
-      .pipe(dest(path.src.img))
-  );
+        },
+      })
+    )
+    .pipe(dest(path.src.img));
 }
 
 /* ===================  images  =================== */
@@ -296,10 +290,19 @@ function fonts() {
   );
 }
 
+/* ====================  move  ==================== */
+
+function move() {
+  return src(`${path.src.static}*.*`).pipe(dest(path.dist));
+}
+
 /* ====================  watch  =================== */
 
 function watchFiles() {
-  watch(path.src.pug, pug).on('change', reload);
+  watch([path.src.root, `${path.src.root}partials/*.html`], html).on(
+    'change',
+    reload
+  );
   watch(path.src.styles, styles);
   watch(path.src.js, js).on('change', reload);
   watch(path.src.img, img);
@@ -323,8 +326,7 @@ function clean() {
 
 /* ===================  exports  ================== */
 
-exports.statics = statics;
-exports.pug = pug;
+exports.html = html;
 exports.styles = styles;
 exports.js = js;
 exports.img = img;
@@ -332,6 +334,7 @@ exports.spritePng = spritePng;
 exports.spriteSvg = spriteSvg;
 exports.fontgen = fontgen;
 exports.fonts = fonts;
+exports.move = move;
 exports.clean = clean;
 exports.watch = watchFiles;
 
@@ -341,7 +344,7 @@ exports.default = series(
   clean,
   // spritePng,
   // spriteSvg,
-  parallel(statics, pug, styles, js, img, fonts),
+  parallel(move, html, styles, js, img, fonts),
   parallel(watchFiles, serve)
 );
 
@@ -351,5 +354,5 @@ exports.build = series(
   clean,
   // spritePng,
   // spriteSvg,
-  parallel(statics, pug, styles, js, img, fonts)
+  parallel(move, html, styles, js, img, fonts)
 );
