@@ -57,7 +57,7 @@ Gulp 4 + Webpack 4
 
 `npm run prod`
 
-### To clean run
+### To clean
 
 `npm run clean`
 
