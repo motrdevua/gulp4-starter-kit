@@ -43,9 +43,9 @@ Gulp 4 + Webpack 4
 4. Use icon as html element:
 
 - Example:
--      <svg class="icon icon-iconName icon-iconName--mod">
-         <use xlink:href="#iconName"></use>
-       </svg>
+-     <svg class="icon icon-iconName icon-iconName--mod">
+        <use xlink:href="#iconName"></use>
+      </svg>
 
 ---
 

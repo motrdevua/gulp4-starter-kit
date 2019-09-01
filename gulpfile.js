@@ -99,7 +99,11 @@ function html() {
   return src(`${path.src.root}*.html`)
     .pipe(
       plugin.include({
-        includePaths: [`${__dirname}/node_modules`, `${__dirname}/src/modules`],
+        includePaths: [
+          `${__dirname}/node_modules`,
+          `${__dirname}/src/modules`,
+          `${__dirname}/src/img`,
+        ],
       })
     )
     .pipe(
@@ -318,7 +322,8 @@ function clean() {
     path.dist,
     `${path.src.fonts}**/*.css`,
     `${path.src.styles}tmp`,
-    `${path.src.img}sprite.{png,svg}`,
+    `${path.src.img}spriteSvg.svg`,
+    `${path.src.img}sprite.png`,
   ]).then(dir => {
     console.log('Deleted files and folders:\n', dir.join('\n'));
   });
