@@ -90,11 +90,10 @@ const webpackConfig = {
 function serve() {
   browserSync.init({
     server: path.dist,
-    tunnel: 'project', // Demonstration page: http://projectname.localtunnel.me
+    // tunnel: 'project', // Demonstration page: http://project.localtunnel.me
     // online: false, // Work Offline Without Internet Connection
   });
 }
-
 
 /* ====================  html  ==================== */
 
