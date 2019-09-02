@@ -96,7 +96,7 @@ function serve() {
 /* ====================  html  ==================== */
 
 function html() {
-  return src(`${path.src.root}*.html`)
+  return src(`${path.src.root}*.{html, php}`)
     .pipe(
       plugin.include({
         includePaths: [
@@ -303,7 +303,7 @@ function move() {
 /* ====================  watch  =================== */
 
 function watchFiles() {
-  watch([path.src.root, `${path.src.root}partials/*.html`], html).on(
+  watch([path.src.root, `${path.src.root}partials/`], html).on(
     'change',
     reload
   );
