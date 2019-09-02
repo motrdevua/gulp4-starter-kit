@@ -305,7 +305,7 @@ function move() {
 /* ====================  watch  =================== */
 
 function watchFiles() {
-  watch([`${path.src.root}*.html`, `${path.src.root}partials/`], html).on(
+  watch([`${path.src.root}*.html`, `${path.src.root}modules/`], html).on(
     'change',
     reload
   );
