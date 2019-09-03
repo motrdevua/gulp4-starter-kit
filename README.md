@@ -24,9 +24,8 @@ Gulp 4 + Webpack 4
 1. Uncomment `'spritePng'` in `'build'` task in `gulpfile.js`.
 2. Put \*.png icons into folder `src/img/png`.
 3. Find `'main.scss'` and uncomment strings:
-
-- @import utils/mixin-spritePng
-  @import tmp/spritePng
+`@import utils/mixin-spritePng`
+`@import tmp/spritePng`
 
 4. Put icon into scss file with mixin `@include sprite($iconname)`
 
