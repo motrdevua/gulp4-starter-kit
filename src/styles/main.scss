@@ -62,7 +62,7 @@ body {
 body {
   font-family: $main-font;
   color: $black;
-  @include rfs(18);
+  @include font-size(18px);
   height: 100%;
 }
 
