@@ -34,7 +34,7 @@ const onError = err => {
 
 const path = {
   src: {
-    root: 'src/',
+    pug: 'src/pug/',
     styles: 'src/styles/',
     js: 'src/js/',
     img: 'src/img/',
@@ -95,22 +95,18 @@ function serve() {
   });
 }
 
-/* ====================  html  ==================== */
+/* =====================  pug  ==================== */
 
-function html() {
-  return src(`${path.src.root}*.{html, php}`)
-    .pipe(
-      plugin.include({
-        includePaths: [
-          `${__dirname}/node_modules`,
-          `${__dirname}/src/modules`,
-          `${__dirname}/src/img`,
-        ],
-      })
-    )
+function pug() {
+  return src(`${path.src.pug}*.pug`)
     .pipe(
       plugin.plumber({
         errorHandler: onError,
+      })
+    )
+    .pipe(
+      plugin.pug({
+        pretty: true,
       })
     )
     .pipe(dest(path.dist));
@@ -305,10 +301,7 @@ function move() {
 /* ====================  watch  =================== */
 
 function watchFiles() {
-  watch([`${path.src.root}*.html`, `${path.src.root}modules/`], html).on(
-    'change',
-    reload
-  );
+  watch(`${path.src.pug}**/*.pug`, pug).on('change', reload);
   watch(path.src.styles, styles);
   watch(path.src.js, js).on('change', reload);
   watch(path.src.img, img);
@@ -333,7 +326,7 @@ function clean() {
 
 /* ===================  exports  ================== */
 
-exports.html = html;
+exports.pug = pug;
 exports.styles = styles;
 exports.js = js;
 exports.img = img;
@@ -351,7 +344,7 @@ exports.default = series(
   clean,
   // spritePng,
   // spriteSvg,
-  parallel(move, html, styles, js, img, fonts),
+  parallel(move, pug, styles, js, img, fonts),
   parallel(watchFiles, serve)
 );
 
@@ -361,5 +354,5 @@ exports.build = series(
   clean,
   // spritePng,
   // spriteSvg,
-  parallel(move, html, styles, js, img, fonts)
+  parallel(move, pug, styles, js, img, fonts)
 );

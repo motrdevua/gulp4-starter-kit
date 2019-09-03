@@ -39,13 +39,11 @@ Gulp 4 + Webpack 4
 
 1. Uncomment `'spriteSvg'` in `'build'` task in `gulpfile.js`
 2. Uncomment string `@import tmp/spriteSvg` in `'main.scss'`.
-2. Uncomment string `//=require spriteSvg.svg` in `'index.html'`.
-4. Use icon as html element:
+2. Uncomment string `include ../../img/spriteSvg.svg` in `'src/pug/template/main.pug'`.
+4. Use icon as pug mixin:
 
 - Example:
--     <svg class="icon icon-iconName icon-iconName--mod">
-        <use xlink:href="#iconName"></use>
-      </svg>
+-     +icon(name, mod)
 
 ---
 
