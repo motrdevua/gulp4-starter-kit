@@ -67,17 +67,18 @@ body {
 }
 
 .wrapper {
+  position: relative;
   display: flex;
   flex-direction: column;
   height: 100%;
 }
 
-.content {
+.main {
   flex: 1 0 auto;
 }
 
 .footer {
-  flex-shrink: 0;
+  flex: 0 0 auto;
 }
 
 // =====================  modules  ========================
