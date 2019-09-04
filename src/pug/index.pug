@@ -1,9 +1,14 @@
 extends template/main
 
 block variables
-  - var title = 'Главная страница'
-  - var description = ''
-  - var keywords = ''
-  - var pageClass = 'index-page'
+  - var title = "Главная страница"
+  - var description = ""
+  - var pageClass = "index-page"
 
 block content
+
+  include ./modules/header
+
+  .content
+
+  include ./modules/footer
