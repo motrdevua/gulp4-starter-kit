@@ -97,19 +97,39 @@ function serve() {
 
 /* =====================  pug  ==================== */
 
+const emitty = require('emitty').setup(path.src.pug, 'pug', {
+  makeVinylFile: true,
+});
+
+global.watch = true;
+global.emittyChangedFile = {
+  path: '',
+  stats: null,
+};
+
 function pug() {
-  return src(`${path.src.pug}*.pug`)
+  return src(`${path.src.pug}*.pug`, { read: false })
     .pipe(
       plugin.plumber({
         errorHandler: onError,
       })
     )
     .pipe(
+      plugin.if(
+        global.watch,
+        emitty.stream(
+          global.emittyChangedFile.path,
+          global.emittyChangedFile.stats
+        )
+      )
+    )
+    .pipe(
       plugin.pug({
         pretty: true,
       })
     )
-    .pipe(dest(path.dist));
+    .pipe(dest(path.dist))
+    .pipe(browserSync.stream());
 }
 
 /* ===================  styles  =================== */
@@ -182,57 +202,59 @@ function spritePng() {
 /* =====================  svg  ==================== */
 
 function spriteSvg() {
-  return src(`${path.src.img}svg/*.svg`)
-    .pipe(
-      plugin.plumber({
-        errorHandler: onError,
-      })
-    )
-    .pipe(
-      plugin.svgmin({
-        js2svg: {
-          pretty: true,
-        },
-      })
-    )
-    .pipe(
-      plugin.cheerio({
-        run: $ => {
-          $('[fill]').removeAttr('fill');
-          $('[stroke]').removeAttr('stroke');
-          $('[style]').removeAttr('style');
-        },
-        parserOptions: {
-          xmlMode: true,
-        },
-      })
-    )
-    .pipe(plugin.replace('&gt;', '>'))
-    .pipe(
-      plugin.spriteSVG({
-        mode: {
-          symbol: {
-            dest: './',
-            sprite: 'spriteSvg.svg',
-            render: {
-              scss: {
-                dest: '../styles/tmp/_spriteSvg.scss',
-                template: `${path.src.styles}utils/spriteSvg.template.scss`,
+  return (
+    src(`${path.src.img}svg/*.svg`)
+      .pipe(
+        plugin.plumber({
+          errorHandler: onError,
+        })
+      )
+      .pipe(
+        plugin.svgmin({
+          js2svg: {
+            pretty: true,
+          },
+        })
+      )
+      // .pipe(
+      //   plugin.cheerio({
+      //     run: $ => {
+      //       $('[fill]').removeAttr('fill');
+      //       $('[stroke]').removeAttr('stroke');
+      //       $('[style]').removeAttr('style');
+      //     },
+      //     parserOptions: {
+      //       xmlMode: true,
+      //     },
+      //   })
+      // )
+      .pipe(plugin.replace('&gt;', '>'))
+      .pipe(
+        plugin.spriteSVG({
+          mode: {
+            symbol: {
+              dest: './',
+              sprite: 'spriteSvg.svg',
+              render: {
+                scss: {
+                  dest: '../styles/tmp/_spriteSvg.scss',
+                  template: `${path.src.styles}utils/spriteSvg.template.scss`,
+                },
               },
-            },
-            svg: {
-              xmlDeclaration: false,
-              doctypeDeclaration: false,
-              rootAttributes: {
-                style: 'display:none;',
-                'aria-hidden': 'true',
+              svg: {
+                xmlDeclaration: false,
+                doctypeDeclaration: false,
+                rootAttributes: {
+                  style: 'display:none;',
+                  'aria-hidden': 'true',
+                },
               },
             },
           },
-        },
-      })
-    )
-    .pipe(dest(path.src.img));
+        })
+      )
+      .pipe(dest(path.src.img))
+  );
 }
 
 /* ===================  images  =================== */
@@ -301,10 +323,11 @@ function move() {
 /* ====================  watch  =================== */
 
 function watchFiles() {
-  watch(`${path.src.pug}**/*.pug`, pug).on('change', reload);
+  watch(`${path.src.pug}**/*.pug`, pug);
   watch(path.src.styles, styles);
   watch(path.src.js, js).on('change', reload);
   watch(path.src.img, img);
+  watch(path.src.static, move);
   watch(`${path.src.img}png/*.png`, spritePng);
   watch(`${path.src.img}svg/*.svg`, spriteSvg);
 }
