@@ -4,6 +4,7 @@ const plugin = require('gulp-load-plugins')({
     'gulp-clean-css': 'cleanCSS',
     'gulp-svg-sprite': 'spriteSVG',
     'gulp-group-css-media-queries': 'gcmq',
+    'gulp-html-prettify': 'prettify',
   },
 });
 
@@ -128,6 +129,7 @@ function pug() {
         pretty: true,
       })
     )
+    .pipe(plugin.prettify({ indent_char: ' ', indent_size: 2 }))
     .pipe(dest(path.dist))
     .pipe(browserSync.stream());
 }

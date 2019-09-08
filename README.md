@@ -16,7 +16,7 @@ Gulp 4 + Webpack 4
 
 - Example:
 -     @include font-face("Lato-Heavy", "../fonts/Lato-Heavy");
-
+    
 ### How to use sprites
 
 #### PNG
@@ -46,13 +46,17 @@ Gulp 4 + Webpack 4
 
 ---
 
+### Generate smart-grid
+
+`npm run grid`
+
 ### Run gulp in development mode
 
 `npm run dev`
 
 ### Make build
 
-`npm run prod`
+`npm run build`
 
 ### To clean
 

@@ -1,7 +1,7 @@
 // =====================  utils  ==========================
 
-// @import 'utils/reset';
-@import 'utils/normalize';
+@import 'utils/reset';
+// @import 'utils/normalize';
 @import 'utils/mixin_font-face';
 @import 'utils/fontstylesheet';
 @import 'utils/variables';
@@ -9,6 +9,10 @@
 // Bootstrap
 
 @import '../../node_modules/bootstrap/scss/bootstrap-grid';
+
+// Smart-grid
+
+// @import '../../smart-grid';
 
 // Rfs
 
@@ -24,61 +28,14 @@
 
 // ====================  Default  =========================
 
-p {
-  hyphens: auto;
-}
-
-button,
-a,
-input {
-  outline: 0;
-}
-
-button,
-a {
-  cursor: pointer;
-}
-
-a {
-  text-decoration: none;
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  transition: all .2s linear;
-}
-
-li {
-  list-style-type: none;
-}
-
-html,
-body {
-  height: 100%;
-}
+@import 'utils/defaults';
 
 body {
-  font-family: $main-font;
-  color: $black;
-  @include font-size(18px);
-  height: 100%;
-}
+  color: $main-color;
+  font-weight: 400;
+  font-family: $default-font;
 
-.wrapper {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.content {
-  flex: 1 0 auto;
-}
-
-.footer {
-  flex: 0 0 auto;
+  @include font-size(16px);
 }
 
 // =====================  modules  ========================
