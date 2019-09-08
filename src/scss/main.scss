@@ -1,0 +1,47 @@
+// =====================  Utils  ==========================
+
+@import "utils/nulling";
+
+@import "utils/mixin_font-face";
+@import "utils/fontstylesheet";
+@import "utils/variables";
+
+// Bootstrap
+
+// @import "../../node_modules/bootstrap/scss/bootstrap-reboot";
+// @import "../../node_modules/bootstrap/scss/bootstrap-grid";
+
+// Smart-grid
+
+// @import "../../smart-grid";
+
+// Rfs
+
+@import "../../node_modules/rfs/sass";
+
+// ========================================================
+//      Uncomment if png or svg folder not empty
+// ========================================================
+//
+// @import "utils/mixin-spritePng";
+// @import "tmp/spritePng";
+// @import "tmp/spriteSvg";
+
+// ====================  Default  =========================
+
+body {
+  color: $main-color;
+  font-weight: 400;
+  font-family: $default-font;
+
+  @include font-size(16px);
+}
+
+// =====================  modules  ========================
+
+@import "modules/header";
+@import "modules/footer";
+
+// =====================  Media  ==========================
+
+// @import "modules/media";

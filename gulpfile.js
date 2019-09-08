@@ -36,7 +36,7 @@ const onError = err => {
 const path = {
   src: {
     pug: 'src/pug/',
-    styles: 'src/styles/',
+    scss: 'src/scss/',
     js: 'src/js/',
     img: 'src/img/',
     fonts: 'src/fonts/',
@@ -134,10 +134,10 @@ function pug() {
     .pipe(browserSync.stream());
 }
 
-/* ===================  styles  =================== */
+/* ====================  scss  ==================== */
 
-function styles() {
-  return src(`${path.src.styles}*.{sass,scss}`)
+function scss() {
+  return src(`${path.src.scss}*.{scss,scss}`)
     .pipe(dev(plugin.sourcemaps.init()))
     .pipe(
       plugin.plumber({
@@ -193,11 +193,11 @@ function spritePng() {
       cssFormat: 'scss',
       algorithm: 'binary-tree',
       padding: 4,
-      cssTemplate: `${path.src.styles}utils/spritePng.template.scss`,
+      cssTemplate: `${path.src.scss}utils/spritePng.template.scss`,
     })
   );
   const imgStream = spriteData.img.pipe(dest(path.src.img));
-  const cssStream = spriteData.css.pipe(dest(`${path.src.styles}tmp/`));
+  const cssStream = spriteData.css.pipe(dest(`${path.src.scss}tmp/`));
   return merge2(imgStream, cssStream);
 }
 
@@ -239,8 +239,8 @@ function spriteSvg() {
               sprite: 'spriteSvg.svg',
               render: {
                 scss: {
-                  dest: '../styles/tmp/_spriteSvg.scss',
-                  template: `${path.src.styles}utils/spriteSvg.template.scss`,
+                  dest: '../scss/tmp/_spriteSvg.scss',
+                  template: `${path.src.scss}utils/spriteSvg.template.scss`,
                 },
               },
               svg: {
@@ -326,7 +326,7 @@ function move() {
 
 function watchFiles() {
   watch(`${path.src.pug}**/*.pug`, pug);
-  watch(path.src.styles, styles);
+  watch(path.src.scss, scss);
   watch(path.src.js, js).on('change', reload);
   watch(path.src.img, img);
   watch(path.src.static, move);
@@ -341,7 +341,7 @@ function clean() {
   return del([
     path.dist,
     `${path.src.fonts}**/*.css`,
-    `${path.src.styles}tmp`,
+    `${path.src.scss}tmp`,
     `${path.src.img}spriteSvg.svg`,
     `${path.src.img}sprite.png`,
   ]).then(dir => {
@@ -352,7 +352,7 @@ function clean() {
 /* ===================  exports  ================== */
 
 exports.pug = pug;
-exports.styles = styles;
+exports.scss = scss;
 exports.js = js;
 exports.img = img;
 exports.spritePng = spritePng;
@@ -369,7 +369,7 @@ exports.default = series(
   clean,
   // spritePng,
   // spriteSvg,
-  parallel(move, pug, styles, js, img, fonts),
+  parallel(move, pug, scss, js, img, fonts),
   parallel(watchFiles, serve)
 );
 
@@ -379,5 +379,5 @@ exports.build = series(
   clean,
   // spritePng,
   // spriteSvg,
-  parallel(move, pug, styles, js, img, fonts)
+  parallel(move, pug, scss, js, img, fonts)
 );
